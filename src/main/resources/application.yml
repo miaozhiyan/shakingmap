@@ -1,0 +1,21 @@
+#Jpa Database config
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/allseal
+    username: root
+    password: mzy!!!123
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  session:
+    store-type: redis
+  security:  #Spring Security 用户名和密码
+    user:
+      name: mzy
+      password: 123
+#logging:
+#  level: debug
+
+#关闭Spring Security身份验证

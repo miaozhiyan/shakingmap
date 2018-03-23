@@ -1,12 +1,14 @@
-package com.douyu.superman.shakingmap;
+package com.douyu.supermap.shakingmap;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ShakingmapApplication {
+//@EnableAutoConfiguration
+//@EnableAspectJAutoProxy
+public class ShakingMapApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ShakingmapApplication.class, args);
+		SpringApplication.run(ShakingMapApplication.class, args);
 	}
 }
