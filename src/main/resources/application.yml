@@ -2,7 +2,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/allseal
+    url: jdbc:mysql://127.0.0.1:3306/magic_map
     username: root
     password: mzy!!!123
   jpa:
@@ -11,11 +11,18 @@ spring:
       ddl-auto: validate
   session:
     store-type: redis
-  security:  #Spring Security 用户名和密码
-    user:
-      name: mzy
-      password: 123
+#  security: #Spring Security 用户名和密码
+#    user:
+#      name: mzy
+#      password: 123
+  thymeleaf:
+    content-type: text/html
+    mode: HTML
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+server:
+  port: 8086
 #logging:
 #  level: debug
-
-#关闭Spring Security身份验证
