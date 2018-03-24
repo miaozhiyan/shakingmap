@@ -16,12 +16,7 @@ spring:
 #      name: mzy
 #      password: 123
   thymeleaf:
-    content-type: text/html
-    mode: HTML
     cache: false
-    prefix: classpath:/templates/
-    suffix: .html
-    encoding: UTF-8
 server:
   port: 8086
 #logging:
