@@ -8,6 +8,7 @@ CREATE TABLE `user` (
   `tel` varchar(11) NOT NULL DEFAULT '' COMMENT '手机',
   `avatar` varchar(40) NOT NULL DEFAULT '' COMMENT '头像',
   `status` int(4) NOT NULL DEFAULT '0' COMMENT '状态',
+  `deposit` decimal(19,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '存款',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 

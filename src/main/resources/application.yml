@@ -19,5 +19,8 @@ spring:
     cache: false
 server:
   port: 8086
+  error:
+    whitelabel:
+      enabled: false
 #logging:
 #  level: debug
