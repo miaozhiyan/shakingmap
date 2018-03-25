@@ -17,6 +17,9 @@ spring:
 #      password: 123
   thymeleaf:
     cache: false
+  devtools:
+    restart:
+      exclude: templates/**,static/**
 server:
   port: 8086
   error:
