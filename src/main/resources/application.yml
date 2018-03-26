@@ -11,10 +11,6 @@ spring:
       ddl-auto: validate
   session:
     store-type: redis
-#  security: #Spring Security 用户名和密码
-#    user:
-#      name: mzy
-#      password: 123
   thymeleaf:
     cache: false
   devtools:
@@ -25,5 +21,13 @@ server:
   error:
     whitelabel:
       enabled: false
+
+# Spring Security 用户名密码配置(详细方式在WebSecurityConfig中配置)
+#security:
+#  user:
+#    name: mzy
+#    password: 123
+#    role: ADMIN
+
 #logging:
 #  level: debug
