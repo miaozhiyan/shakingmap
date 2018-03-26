@@ -21,13 +21,11 @@ server:
   error:
     whitelabel:
       enabled: false
-
-# Spring Security 用户名密码配置(详细方式在WebSecurityConfig中配置)
+#Spring Security (see detail in WebSecurityConfig.java)
 #security:
 #  user:
 #    name: mzy
 #    password: 123
 #    role: ADMIN
-
 #logging:
 #  level: debug
