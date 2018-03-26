@@ -1,4 +1,4 @@
-package com.douyu.supermap.shakingmap.config;
+package com.douyu.supermap.shakingmap.config.springsecurity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -34,8 +34,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login")
-                .and();
-
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/logout/page")
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(entryPoint())
+                .accessDeniedPage("/403");
         http.csrf().disable();
         http.headers().frameOptions().sameOrigin();
     }
@@ -61,5 +69,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Bean
     public AuthProvider authProvider(){
         return new AuthProvider();
+    }
+
+    @Bean
+    public LoginUrlEntryPoint entryPoint(){
+        return new LoginUrlEntryPoint("/user/login");
     }
 }

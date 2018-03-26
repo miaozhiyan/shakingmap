@@ -1,4 +1,4 @@
-package com.douyu.supermap.shakingmap.config;
+package com.douyu.supermap.shakingmap.config.jpa;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Value;

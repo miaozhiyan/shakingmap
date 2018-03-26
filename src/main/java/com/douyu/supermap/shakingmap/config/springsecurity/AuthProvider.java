@@ -1,4 +1,4 @@
-package com.douyu.supermap.shakingmap.config;
+package com.douyu.supermap.shakingmap.config.springsecurity;
 
 import com.douyu.supermap.shakingmap.common.entity.User;
 import com.douyu.supermap.shakingmap.service.interfaces.IUserService;
