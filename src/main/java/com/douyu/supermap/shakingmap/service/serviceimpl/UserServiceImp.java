@@ -2,20 +2,26 @@ package com.douyu.supermap.shakingmap.service.serviceimpl;
 
 import com.douyu.supermap.shakingmap.common.entity.Role;
 import com.douyu.supermap.shakingmap.common.entity.User;
+import com.douyu.supermap.shakingmap.common.vo.ResultVo;
 import com.douyu.supermap.shakingmap.dao.RoleRepository;
 import com.douyu.supermap.shakingmap.dao.UserRepository;
 import com.douyu.supermap.shakingmap.service.interfaces.IUserService;
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserServiceImp implements IUserService{
+    private static final File TEMP_DIR = SystemUtils.getJavaIoTmpDir();
+
     @Autowired
     private UserRepository userRepository;
 
@@ -39,5 +45,10 @@ public class UserServiceImp implements IUserService{
         user.setAuthorityList(authorities);
 
         return user;
+    }
+
+    @Override
+    public ResultVo uploadPhoto(MultipartFile file) {
+        return null;
     }
 }

@@ -16,11 +16,26 @@ spring:
   devtools:
     restart:
       exclude: templates/**,static/**
+  http:
+    multipart:
+      enabled: true
+      max-request-size: 20MB
+      max-file-size: 5MB
 server:
   port: 8086
   error:
     whitelabel:
       enabled: false
+
+#qiniu config
+qiniu:
+  AccessKey: zjviEeakOpDax3FyG3lwWwv7xg9ZEXwBRgS8_9dg
+  SecretKey: ShPmMd3WyOYSKvf0SHS4k-vN2XfHzGUFrgGO2FJc
+  Bucket: mzy-811
+  cdn:
+    prefix: p6a8636wy.bkt.clouddn.com
+
+
 #Spring Security (see detail in WebSecurityConfig.java)
 #security:
 #  user:

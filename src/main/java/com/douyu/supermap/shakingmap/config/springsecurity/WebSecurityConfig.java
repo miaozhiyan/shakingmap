@@ -34,6 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login")
+                .failureHandler(loginAuthFailHandler())
                 .and()
                 .logout()
                 .logoutUrl("/logout")
@@ -42,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .invalidateHttpSession(true)
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(entryPoint())
+//                .authenticationEntryPoint(entryPoint())
                 .accessDeniedPage("/403");
         http.csrf().disable();
         http.headers().frameOptions().sameOrigin();
@@ -74,5 +75,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Bean
     public LoginUrlEntryPoint entryPoint(){
         return new LoginUrlEntryPoint("/user/login");
+    }
+
+    @Bean
+    public LoginAuthFailHandler loginAuthFailHandler(){
+        return new LoginAuthFailHandler(entryPoint());
     }
 }
