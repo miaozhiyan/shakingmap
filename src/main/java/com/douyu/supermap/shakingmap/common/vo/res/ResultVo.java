@@ -1,4 +1,4 @@
-package com.douyu.supermap.shakingmap.common.vo;
+package com.douyu.supermap.shakingmap.common.vo.res;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

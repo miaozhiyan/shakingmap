@@ -1,6 +1,6 @@
 package com.douyu.supermap.shakingmap.controller;
 
-import com.douyu.supermap.shakingmap.common.vo.ResultVo;
+import com.douyu.supermap.shakingmap.common.vo.res.ResultVo;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.stereotype.Controller;
