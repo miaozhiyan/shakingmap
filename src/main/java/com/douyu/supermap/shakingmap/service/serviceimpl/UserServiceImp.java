@@ -26,6 +26,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -80,8 +81,19 @@ public class UserServiceImp implements IUserService{
     }
 
     @Override
-    public ResultVo uploadPhoto(MultipartFile file) {
-        return null;
+    @Transactional
+    public ResultVo uploadPhoto(MultipartFile file,Long uid) throws IOException {
+        File temp = new File(ROOT_TEMP_WORK_SPACE,System.currentTimeMillis()+"uid"+uid);
+        try {
+            file.transferTo(temp);
+            Response response = qiNiuService.uploadFile(temp);
+            QiNiuResBodyVo resBody = gson.fromJson(response.bodyString(), QiNiuResBodyVo.class);
+            String avatorUrl = QINIU_URL+"/"+resBody.key;/* rpc调用后赋值 */
+            userRepository.updateAvatarByUid(avatorUrl,uid);
+        }finally {
+            FileUtils.forceDelete(temp);
+        }
+        return ResultVo.asSuccess();
     }
 
     @Override

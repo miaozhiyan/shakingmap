@@ -11,7 +11,7 @@ import java.io.IOException;
 public interface IUserService {
     User findUserByAccount(String account);
 
-    ResultVo uploadPhoto(MultipartFile file);
+    ResultVo uploadPhoto(MultipartFile file,Long uid) throws IOException;
 
     void addContent(MultipartFile file, AddNewContentReq req, HttpServletRequest request) throws IOException;
 }

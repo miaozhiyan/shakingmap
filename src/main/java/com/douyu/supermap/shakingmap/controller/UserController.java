@@ -5,6 +5,8 @@ import com.douyu.supermap.shakingmap.common.vo.req.AddNewContentReq;
 import com.douyu.supermap.shakingmap.common.vo.res.ResultVo;
 import com.douyu.supermap.shakingmap.service.interfaces.IUserService;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,8 @@ import javax.validation.constraints.NotNull;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     private static final long MAX_CONTENT_FILE_SIZE = 8* FileUtils.ONE_MB;
 
     @Autowired
@@ -41,6 +45,7 @@ public class UserController {
         try {
             userService.addContent(file,req,request);
         }catch (Exception e){
+            logger.error("上传内容失败:",e);
             return ResultVo.asError("添加内容失败");
         }
         return ResultVo.asSuccess();
@@ -63,16 +68,17 @@ public class UserController {
         return "user/center";
     }
 
-    @PostMapping(value = "user/upload/photo",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "upload/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
-    public ResultVo uploadPhoto(@RequestParam("file")MultipartFile file){
+    public ResultVo uploadPhoto(@RequestParam("file")MultipartFile file,Long uid){
         if (file==null || file.isEmpty()){
             return ResultVo.asError("上传文件为空!");
         }
 
         try {
-            userService.uploadPhoto(file);
+            userService.uploadPhoto(file,uid);
         }catch (Exception e){
+            logger.error("上传头像失败:",e);
             return ResultVo.asError("上传图片异常");
         }
         return ResultVo.asSuccess();
