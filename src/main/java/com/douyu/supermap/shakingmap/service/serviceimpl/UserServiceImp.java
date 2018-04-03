@@ -112,8 +112,8 @@ public class UserServiceImp implements IUserService{
             IpInfoVo ipInfoVo = IPUtils.getIpInfo(IPUtils.getRemoteHost(request));
             IpInfoData infoData = ipInfoVo.data;
             StringBuilder location = new StringBuilder();
-            location.append(infoData.country).append("-")
-                    .append(infoData.region).append("-")
+            location.append(infoData.country).append("--")
+                    .append(infoData.region).append("--")
                     .append(infoData.city);
             newContent.setLocation(location.toString());
 

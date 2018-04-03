@@ -20,7 +20,18 @@ spring:
     multipart:
       enabled: true
       max-request-size: 20MB
-      max-file-size: 5MB
+      max-file-size: 15MB
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password: mzy!!!123
+    pool:
+      max-active: 10
+      max-idle: 3
+      max-wait: 1
+      min-idle: 1
+    timeout: 1000
 server:
   port: 8086
   error:
@@ -34,7 +45,6 @@ qiniu:
   Bucket: mzy-811
   cdn:
     prefix: p6a8636wy.bkt.clouddn.com
-
 
 #Spring Security (see detail in WebSecurityConfig.java)
 #security:
