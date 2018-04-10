@@ -3,27 +3,36 @@ package com.douyu.supermap.shakingmap.service.serviceimpl;
 import com.douyu.supermap.shakingmap.common.entity.Content;
 import com.douyu.supermap.shakingmap.common.entity.User;
 import com.douyu.supermap.shakingmap.common.vo.inner.ContentTemplate;
+import com.douyu.supermap.shakingmap.common.vo.req.QueryContentReq;
 import com.douyu.supermap.shakingmap.dao.ContentRepository;
 import com.douyu.supermap.shakingmap.dao.UserRepository;
 import com.douyu.supermap.shakingmap.service.interfaces.ISearchService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.primitives.Longs;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 @Service
 public class SearchServiceImp implements ISearchService{
@@ -74,7 +83,7 @@ public class SearchServiceImp implements ISearchService{
         SearchRequestBuilder requestBuilder = this.esClient
                 .prepareSearch(INDEX_NAME)
                 .setTypes(INDEX_TYPE)
-                .setQuery(QueryBuilders.termQuery("KEY_CONTENT_ID",contentId));
+                .setQuery(QueryBuilders.termQuery("id",contentId));
 
         logger.debug(requestBuilder.toString());
 
@@ -108,7 +117,7 @@ public class SearchServiceImp implements ISearchService{
         DeleteByQueryRequestBuilder builder =
                 DeleteByQueryAction.INSTANCE
                         .newRequestBuilder(esClient)
-                        .filter(QueryBuilders.termQuery("KEY_CONTENT_ID",contentId))
+                        .filter(QueryBuilders.termQuery("id",contentId))
                         .source(INDEX_NAME);
 
         logger.debug("delete by query for house"+builder);
@@ -152,7 +161,7 @@ public class SearchServiceImp implements ISearchService{
         DeleteByQueryRequestBuilder builder =
                 DeleteByQueryAction.INSTANCE
                 .newRequestBuilder(esClient)
-                .filter(QueryBuilders.termQuery("KEY_CONTENT_ID",template.getId()))
+                .filter(QueryBuilders.termQuery("id",template.getId()))
                 .source(INDEX_NAME);
 
         logger.debug("delete by query for house"+builder);
@@ -164,5 +173,51 @@ public class SearchServiceImp implements ISearchService{
             return false;
         }
         return create(template);
+    }
+
+    @Override
+    public List<Long> queryContent(QueryContentReq req) {
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+        if(req.getContentNote()!=null){
+            boolQueryBuilder.filter(QueryBuilders.termQuery("contentNote",req.getContentNote()));
+        }
+        if(req.getLocationCity()!=null){
+            boolQueryBuilder.filter(QueryBuilders.termQuery("locationCity",req.getLocationCity()));
+        }
+        if(req.getLocationCountry()!=null){
+            boolQueryBuilder.filter(QueryBuilders.termQuery("locationCountry",req.getLocationCountry()));
+        }
+        if(req.getLocationRegion()!=null){
+            boolQueryBuilder.filter(QueryBuilders.termQuery("locationRegion",req.getLocationRegion()));
+        }
+        if(req.getNickname()!=null){
+            boolQueryBuilder.filter(QueryBuilders.termQuery("nickname",req.getNickname()));
+        }
+
+        SearchRequestBuilder requestBuilder = this.esClient.prepareSearch(INDEX_NAME)
+                .setTypes(INDEX_TYPE)
+                .setQuery(boolQueryBuilder)
+                .addSort("favoriteCount", SortOrder.fromString("desc"))
+                .setFrom(0)
+                .setSize(60);
+        logger.debug(requestBuilder.toString());
+
+        List<Long> list = new ArrayList<>();
+        SearchResponse response = requestBuilder.get();
+
+        if (response.status()!= RestStatus.OK){
+            logger.error("查询异常！"+requestBuilder);
+            return  list;
+        }
+
+        response.getHits().forEach(new Consumer<SearchHit>() {
+            @Override
+            public void accept(SearchHit documentFields) {
+                list.add(Longs.tryParse( String.valueOf( documentFields.getSourceAsMap().get("id") ) ));
+            }
+        });
+
+        return list;
     }
 }
