@@ -18,4 +18,6 @@ public class QueryContentReq {
     private String contentNote;
 
     private String nickname;
+
+    private Integer favoriteCount;
 }

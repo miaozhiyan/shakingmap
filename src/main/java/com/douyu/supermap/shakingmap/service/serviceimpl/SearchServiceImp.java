@@ -18,6 +18,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
@@ -194,6 +195,13 @@ public class SearchServiceImp implements ISearchService{
         if(req.getNickname()!=null){
             boolQueryBuilder.filter(QueryBuilders.termQuery("nickname",req.getNickname()));
         }
+
+        if (req.getFavoriteCount()!=null){
+            RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("favoriteCount");
+            rangeQueryBuilder.gte(req.getFavoriteCount());
+            boolQueryBuilder.filter(rangeQueryBuilder);
+        }
+
 
         SearchRequestBuilder requestBuilder = this.esClient.prepareSearch(INDEX_NAME)
                 .setTypes(INDEX_TYPE)
