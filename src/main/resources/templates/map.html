@@ -17,7 +17,9 @@
 <body>
 <input id="searchText" type="text" name="searchText"></input>
 <input type="button" id = "searchButton" name="searchButton" value="查询"/>
-<input type="button" id = "currentLocaltion" name="currentLocaltionButton" value="查询"/>
+<input type="button" id = "currentLocaltion" name="currentLocaltionButton" value="当前位置"/>
+<input type="button" id = "interestingSearch" name="interestingSearchButton" value="某个城市特定类型的地点"/>
+<input id="cityText" type="text" name="cityText"></input>
 <div id="container"></div>
 <script type="text/javascript">
     var map = new BMap.Map("container");
@@ -33,8 +35,11 @@
     //map.addControl(new BMap.MapTypeControl());
     //map.setCurrentCity("武汉"); // 仅当设置城市信息时，MapTypeControl 的切换功能才能可用
 
+
+    //获得当前位置方法
     var currentLocaltionButton = document.getElementById("currentLocaltion");
     currentLocaltionButton.onclick = function(){
+        map.clearOverlays();
         var geolocation = new BMap.Geolocation();
         geolocation.getCurrentPosition(function(r){
             if(this.getStatus() == 0){
@@ -49,6 +54,12 @@
         },{enableHighAccuracy: true})
     }
 
+    //点击事件获取经纬度
+    map.addEventListener("dblclick",function(e){
+        prompt("鼠标单击地方的经纬度为：",e.point.lng + "," + e.point.lat);
+    });
+
+    //查询方法
     var searchElement = document.getElementById("searchButton");
     searchElement.onclick = function(){
         map.clearOverlays();
@@ -68,7 +79,29 @@
     }
 
 
-    function drawRegionTest(map){
+    //兴趣点查找
+    var interestSearchElement = document.getElementById("interestingSearch");
+    interestSearchElement.onclick = function(){
+        map.clearOverlays();
+
+        var searchText = document.getElementById("searchText");
+        var searchCity = document.getElementById("cityText");
+        var local = new BMap.LocalSearch(searchCity.value,{
+            renderOptions:{
+                map: map,
+                autoViewport: true,
+                selectFirstResult: false,
+                panel: "results"
+            },
+            pageCapacity: 16
+        });
+        local.search(searchText.value);
+    }
+
+
+
+    //以下内容还在测试
+    /*function drawRegionTest(map){
         var regionPoint;
         var textLabel;
 
@@ -140,7 +173,7 @@
 
             map.addOverlay(textLabel);  //将标签画在地图上
         }
-    }
+    }*/
 
 
 </script>
