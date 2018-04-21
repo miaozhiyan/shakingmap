@@ -19,5 +19,5 @@ public interface ISearchService {
      */
     void remove(Long contentId);
 
-    List<Long> queryContent(QueryContentReq req);
+    List<ContentTemplate> queryContent(QueryContentReq req);
 }

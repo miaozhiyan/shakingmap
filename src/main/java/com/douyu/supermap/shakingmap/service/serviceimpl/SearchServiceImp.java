@@ -177,7 +177,7 @@ public class SearchServiceImp implements ISearchService{
     }
 
     @Override
-    public List<Long> queryContent(QueryContentReq req) {
+    public List<ContentTemplate> queryContent(QueryContentReq req) {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 
         if(req.getContentNote()!=null){
@@ -211,7 +211,7 @@ public class SearchServiceImp implements ISearchService{
                 .setSize(60);
         logger.debug(requestBuilder.toString());
 
-        List<Long> list = new ArrayList<>();
+        List<ContentTemplate> list = new ArrayList<>();
         SearchResponse response = requestBuilder.get();
 
         if (response.status()!= RestStatus.OK){
@@ -222,7 +222,14 @@ public class SearchServiceImp implements ISearchService{
         response.getHits().forEach(new Consumer<SearchHit>() {
             @Override
             public void accept(SearchHit documentFields) {
-                list.add(Longs.tryParse( String.valueOf( documentFields.getSourceAsMap().get("id") ) ));
+                ContentTemplate template = new ContentTemplate();
+                template.setId(Longs.tryParse(String.valueOf( documentFields.getSourceAsMap().get("id"))) );
+                template.setNickname(String.valueOf( documentFields.getSourceAsMap().get("nickname")));
+                template.setLocationCountry(String.valueOf( documentFields.getSourceAsMap().get("locationCountry")));
+                template.setLocationCity(String.valueOf( documentFields.getSourceAsMap().get("locationCity")));
+                template.setLocationRegion(String.valueOf( documentFields.getSourceAsMap().get("locationRegion")));
+                template.setContentNote(String.valueOf( documentFields.getSourceAsMap().get("contentNote")));
+                list.add(template);
             }
         });
 

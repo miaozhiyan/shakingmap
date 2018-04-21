@@ -38,7 +38,7 @@ public class SearchServiceImpTest extends ShakingmapApplicationTests{
     public void testQuery(){
         QueryContentReq req = new QueryContentReq();
         req.setNickname("mzy");
-        List<Long> ids = searchService.queryContent(req);
+        List<ContentTemplate> ids = searchService.queryContent(req);
         System.out.println("okok");
     }
 }

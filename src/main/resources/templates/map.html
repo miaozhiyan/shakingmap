@@ -9,8 +9,7 @@
         body{height:100%;margin:0px;padding:0px}
         #container{height:100%}
     </style>
-    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=8Lrjtbq9AVIkXQGyI495DhPV1TfuKNtY">
-        //v3.0版本的引用方式：src="http://api.map.baidu.com/api?v=3.0&ak=您的密钥"
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&amp;ak=8Lrjtbq9AVIkXQGyI495DhPV1TfuKNtY">
     </script>
 </head>
 
@@ -98,82 +97,6 @@
         local.search(searchText.value);
     }
 
-
-
-    //以下内容还在测试
-    /*function drawRegionTest(map){
-        var regionPoint;
-        var textLabel;
-
-        regionPoint = new BMap.Point(111.2888001000,
-            30.7081000101);
-        var textContent = '<p style="margin-top: 20px;pointer-events: none">'
-            + 123123 + '</p>' + '<p style="pointer-events: none">'
-            +'Sign!</p>';
-
-        textLabel = new BMap.Label(textContent,{
-            position: regionPoint,  //标签位置
-            offset: new BMap.Size(-40,20)  //文本偏移量
-        })
-
-        textLabel.setStyle({
-            height: '78px',
-            width: '78px',
-            color: '#fff',
-            backgroundColor: '&#0054a5',
-            border: '0px solod rgb(255,0,0)',
-            borderRadius: "50%",
-            display: 'inline',
-            fontWeight: 'bold',
-            lineHeight: 'normal',
-            textAlign: 'center',
-            opacity: '0.8',
-            zIndex: 2,
-            overflow: 'hidden'
-        });
-
-        map.addOverlay(textLabel);  //将标签画在地图上
-
-    }
-
-    drawRegionTest(map);
-
-
-
-    function drawRegion(map,regionList){
-        var regionPoint;
-        var textLabel;
-        for(var i=0;i<regionList.length;i++){
-            regionPoint = new BMap.Point(regionList[i].baiduMapLongtitue,
-                regionList[i].baiduMapLatitude);
-            var textContent = '<p style="margin-top: 20px;pointer-events: none">'
-                + regionList[i].cn_name + '</p>' + '<p style="pointer-events: none">'
-                +'Sign!</p>';
-
-            textLabel = new BMap.Label(textContent,{
-                position: regionPoint,  //标签位置
-                offset: new BMap.Size(-40,20)  //文本偏移量
-            })
-
-            textLabel.setStyle({
-                height: '78px',
-                width: '78px',
-                color: '#fff',
-                backgroundColor: '&#0054a5',
-                border: '0px solod rgb(255,0,0)',
-                borderRadius: "50%",
-                display: 'inline',
-                fontWeight: 'bold',
-                lineHeight: 'normal',
-                textAlign: 'center',
-                opacity: '0.8',
-                zIndex: 2,
-                overflow: 'hidden'
-            });
-
-            map.addOverlay(textLabel);  //将标签画在地图上
-        }
-    }*/
 
 
 </script>

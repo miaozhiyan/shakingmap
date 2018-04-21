@@ -68,6 +68,11 @@ public class UserController {
         return "user/center";
     }
 
+    @GetMapping("/mainMap")
+    public String mainMap(){
+        return "map";
+    }
+
     @PostMapping(value = "upload/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     public ResultVo uploadPhoto(@RequestParam("file")MultipartFile file,Long uid){
