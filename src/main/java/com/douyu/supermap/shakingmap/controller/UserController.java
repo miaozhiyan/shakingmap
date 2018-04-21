@@ -1,6 +1,7 @@
 package com.douyu.supermap.shakingmap.controller;
 
 import com.douyu.supermap.shakingmap.common.utils.FileUploadUtils;
+import com.douyu.supermap.shakingmap.common.vo.inner.ContentTemplate;
 import com.douyu.supermap.shakingmap.common.vo.req.AddNewContentReq;
 import com.douyu.supermap.shakingmap.common.vo.res.ResultVo;
 import com.douyu.supermap.shakingmap.service.interfaces.IUserService;
@@ -17,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -72,6 +75,23 @@ public class UserController {
     public String mainMap(){
         return "map";
     }
+
+    @GetMapping("/showMagicPosition")
+    @ResponseBody
+    public ResultVo showMagicPosition(){
+        List<ContentTemplate> templates = new ArrayList<>();
+        ContentTemplate template = new ContentTemplate();
+        template.setLocationRegion("西陵区");
+        template.setLocationCity("宜昌");
+        template.setLocationCountry("中国");
+        template.setNickname("测试的昵称");
+        template.setContentNote("测试的地点");
+        template.setBaiduMapLongtitue(111.31018);
+        template.setBaiduMapLatitude(30.73268);
+        templates.add(template);
+        return ResultVo.asSuccess(templates);
+    }
+
 
     @PostMapping(value = "upload/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody

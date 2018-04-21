@@ -19,6 +19,8 @@
 <input type="button" id = "currentLocaltion" name="currentLocaltionButton" value="当前位置"/>
 <input type="button" id = "interestingSearch" name="interestingSearchButton" value="某个城市特定类型的地点"/>
 <input id="cityText" type="text" name="cityText"></input>
+<span> ——————————</span>
+<input type="button" id = "magicLocation" name="magicLocation" value="显示上传的地点"/>
 <div id="container"></div>
 <script type="text/javascript">
     var map = new BMap.Map("container");
@@ -98,8 +100,31 @@
     }
 
 
+    var magicPosition = document.getElementById("magicLocation");
+    magicPosition.onclick = function () {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.status==200){
+                if ( xmlhttp.readyState==4){
+                    map.clearOverlays();
+                    var resStr = xmlhttp.response;
+                    var res = JSON.parse(resStr);
+                    var regionList;
+                    if(res.code == 0){
+                        regionList = res.data;
+                    }
+                    drawRegion(map,regionList);
+                }
+            }
+        }
+
+        xmlhttp.open("get","/user/showMagicPosition");
+        xmlhttp.send(null);
+    }
+
 
 </script>
+<script  type='text/javascript' src="/static/drawRegion.js"></script>
 </body>
 </html>
 

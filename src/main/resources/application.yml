@@ -32,6 +32,8 @@ spring:
       max-wait: 1
       min-idle: 1
     timeout: 1000
+  mvc:
+    static-path-pattern: /static/**
 server:
   port: 8086
   error:

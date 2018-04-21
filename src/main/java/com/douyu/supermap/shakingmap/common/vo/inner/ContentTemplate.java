@@ -34,4 +34,8 @@ public class ContentTemplate {
     private String avatar;
 
     private String nickname;
+
+    private Double baiduMapLongtitue;
+
+    private Double baiduMapLatitude;
 }
