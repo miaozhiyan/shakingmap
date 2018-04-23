@@ -71,11 +71,6 @@ public class UserController {
         return "user/center";
     }
 
-    @GetMapping("/mainMap")
-    public String mainMap(){
-        return "map";
-    }
-
     @GetMapping("/showMagicPosition")
     @ResponseBody
     public ResultVo showMagicPosition(){

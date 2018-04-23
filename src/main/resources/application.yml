@@ -48,6 +48,10 @@ qiniu:
   cdn:
     prefix: p6a8636wy.bkt.clouddn.com
 
+
+baidu:
+  serverKey: 3cVnhYz4X3rATFPLYWjoZyrYiYRKnARX
+
 #Spring Security (see detail in WebSecurityConfig.java)
 #security:
 #  user:
