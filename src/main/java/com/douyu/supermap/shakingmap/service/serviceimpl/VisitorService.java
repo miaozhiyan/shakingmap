@@ -27,6 +27,7 @@ public class VisitorService implements IVisitorService{
     private String baiduServerKey;
 
 
+    @Override
     public ResultVo locationInfo(String address,String city) throws IOException {
         address = URLEncoder.encode(address,"UTF-8");
         city = URLEncoder.encode(city,"UTF-8");
