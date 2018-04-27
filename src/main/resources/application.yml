@@ -34,6 +34,9 @@ spring:
     timeout: 1000
   mvc:
     static-path-pattern: /static/**
+#  data:
+#    mongodb:
+#      uri: mongodb://name:pass@localhost:27017/test
 server:
   port: 8086
   error:
@@ -51,6 +54,18 @@ qiniu:
 
 baidu:
   serverKey: 3cVnhYz4X3rATFPLYWjoZyrYiYRKnARX
+
+mongodb:
+  primary:
+    host: 127.0.0.1
+    port: 27017
+    database: mzytest
+#  secondary:
+#    host: 192.168.9.60
+#    port: 20000
+#    database: test1
+
+
 
 #Spring Security (see detail in WebSecurityConfig.java)
 #security:
