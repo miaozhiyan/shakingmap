@@ -2,11 +2,13 @@ package com.douyu.supermap.shakingmap.config.springsecurity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity
@@ -24,6 +26,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 *	匹配0或者任意数量的字符
                 **	匹配0或者更多的目录
          */
+        http.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
+
         http.authorizeRequests()
                 .antMatchers("/visitor/**").permitAll() //游客
                 .antMatchers("/static/**").permitAll()  //静态资源
@@ -80,5 +84,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Bean
     public LoginAuthFailHandler loginAuthFailHandler(){
         return new LoginAuthFailHandler(entryPoint());
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(){
+        AuthenticationManager authenticationManager = null;
+        try {
+            authenticationManager = super.authenticationManager();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return authenticationManager;
+    }
+
+    @Bean
+    public AuthFilter authFilter(){
+        AuthFilter authFilter = new AuthFilter();
+        authFilter.setAuthenticationManager(authenticationManager());
+        authFilter.setAuthenticationFailureHandler(loginAuthFailHandler());
+        return authFilter;
     }
 }

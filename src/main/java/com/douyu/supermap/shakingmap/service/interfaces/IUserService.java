@@ -18,4 +18,13 @@ public interface IUserService {
     void addContent(MultipartFile file, AddNewContentReq req, HttpServletRequest request) throws IOException;
 
     List<User> queryUser(QueryUserReq queryUserReq);
+
+    User findUserByTel(String tel);
+
+    /**
+     * 通过手机号注册用户
+     * @param tel
+     * @return
+     */
+    User addUserByTel(String tel);
 }

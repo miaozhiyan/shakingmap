@@ -17,5 +17,7 @@ public interface UserRepository extends PagingAndSortingRepository<User,Long> {
     int updateAvatarByUid(@Param("avatarUrl") String avatarUrl,@Param("uid")Long uid);
 
     Page<User> findAll(Specification<User> spec, Pageable pageable);
+
+    User findUserByTel(String tel);
 }
 

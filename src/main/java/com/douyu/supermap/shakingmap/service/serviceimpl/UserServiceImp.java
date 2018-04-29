@@ -16,6 +16,7 @@ import com.douyu.supermap.shakingmap.dao.RoleRepository;
 import com.douyu.supermap.shakingmap.dao.UserRepository;
 import com.douyu.supermap.shakingmap.service.interfaces.IQiNiuService;
 import com.douyu.supermap.shakingmap.service.interfaces.IUserService;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.qiniu.http.Response;
 import org.apache.commons.io.FileUtils;
@@ -172,5 +173,41 @@ public class UserServiceImp implements IUserService{
         Page<User> page = userRepository.findAll(specification,pageRequest);
 
         return page.getContent();
+    }
+
+    @Override
+    public User findUserByTel(String tel) {
+        User user = userRepository.findUserByTel(tel);
+        if (user == null){
+            return null;
+        }
+        List<Role> roles = roleRepository.findRolesByUserId(user.getId());
+        if (roles==null || roles.isEmpty()){
+            throw new DisabledException("权限非法");
+        }
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        roles.forEach(
+                role->authorities.add(
+                        new SimpleGrantedAuthority("ROLE_"+role.getRoleName())
+                )
+        );
+        user.setAuthorityList(authorities);
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public User addUserByTel(String tel) {
+        User user = new User();
+        user.setTel(tel);
+        user.setNickname(tel.substring(0,3)+"****"+tel.substring(7,tel.length()));
+        user.setCreateTime(System.currentTimeMillis());
+        userRepository.save(user);
+        Role role = new Role();
+        role.setRoleName("USER");
+        role.setUserId(user.getId());
+        roleRepository.save(role);
+        user.setAuthorityList(Lists.newArrayList(new SimpleGrantedAuthority("ROLE_USER")));
+        return user;
     }
 }
