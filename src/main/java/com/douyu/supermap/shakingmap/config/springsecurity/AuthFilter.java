@@ -31,7 +31,7 @@ public class AuthFilter extends UsernamePasswordAuthenticationFilter{
             throw new BadCredentialsException("电话号码错误:["+telephone+"]");
         }
 
-        User user = userService.addUserByTel(telephone);
+        User user = userService.findUserByTel(telephone);
         String inputSmsCode = request.getParameter("smsCode");
         String sessionCode = null;//TODO 短信验证码
         if (!Objects.equals(inputSmsCode,sessionCode)){//不等
