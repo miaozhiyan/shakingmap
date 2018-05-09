@@ -28,6 +28,8 @@ public class UserController {
 
     private static final long MAX_CONTENT_FILE_SIZE = 8* FileUtils.ONE_MB;
 
+    private List<ContentTemplate> templates = new ArrayList<>();
+
     @Autowired
     private IUserService userService;
 
@@ -74,16 +76,54 @@ public class UserController {
     @GetMapping("/showMagicPosition")
     @ResponseBody
     public ResultVo showMagicPosition(){
-        List<ContentTemplate> templates = new ArrayList<>();
-        ContentTemplate template = new ContentTemplate();
-        template.setLocationRegion("西陵区");
-        template.setLocationCity("宜昌");
-        template.setLocationCountry("中国");
-        template.setNickname("测试的昵称");
-        template.setContentNote("测试的地点");
-        template.setBaiduMapLongtitue(111.31018);
-        template.setBaiduMapLatitude(30.73268);
-        templates.add(template);
+        if (templates.isEmpty()){
+            ContentTemplate template = new ContentTemplate();
+            template.setLocationRegion("西陵区");
+            template.setLocationCity("宜昌");
+            template.setLocationCountry("中国");
+            template.setNickname("测试的昵称");
+            template.setContentNote("测试的地点");
+            template.setBaiduMapLongtitue(111.31018);
+            template.setBaiduMapLatitude(30.73268);
+            templates.add(template);
+
+
+            ContentTemplate template2 = new ContentTemplate();
+            template2.setLocationRegion("江夏区");
+            template2.setLocationCity("武汉");
+            template2.setLocationCountry("中国");
+            template2.setNickname("缪添加");
+            template2.setContentNote("华夏学院上面");
+            template2.setBaiduMapLongtitue(114.418145);
+            template2.setBaiduMapLatitude(30.475546);
+            templates.add(template2);
+        }
+
+        return ResultVo.asSuccess(templates);
+    }
+
+
+    @PostMapping("/markFavor")
+    @ResponseBody
+    public ResultVo markFavor(String latADlng){
+
+        String [] data = latADlng.split(",");
+        String lat = data[0];
+        String lng = data[1];
+        templates.forEach(
+                contentTemplate->{
+                    boolean cor =
+                    (
+                            Math.abs(contentTemplate.getBaiduMapLatitude() - Double.parseDouble(lat))<0.001 &&
+                            Math.abs(contentTemplate.getBaiduMapLongtitue() - Double.parseDouble(lng))<0.001
+                    );
+
+                    if (cor){
+                        contentTemplate.setFavoriteCount(contentTemplate.getFavoriteCount()+1);
+                    }
+                }
+        );
+
         return ResultVo.asSuccess(templates);
     }
 

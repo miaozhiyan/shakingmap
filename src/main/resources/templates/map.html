@@ -19,7 +19,7 @@
 <input type="button" id = "currentLocaltion" name="currentLocaltionButton" value="当前位置"/>
 <input type="button" id = "interestingSearch" name="interestingSearchButton" value="某个城市特定类型的地点"/>
 <input id="cityText" type="text" name="cityText"></input>
-<span> ——————————</span>
+<span> ———</span>
 <input type="button" id = "magicLocation" name="magicLocation" value="显示上传的地点"/>
 <div id="container"></div>
 <script type="text/javascript">
@@ -36,6 +36,8 @@
     //map.addControl(new BMap.MapTypeControl());
     //map.setCurrentCity("武汉"); // 仅当设置城市信息时，MapTypeControl 的切换功能才能可用
 
+
+    var magicOpen = false;
 
     //获得当前位置方法
     var currentLocaltionButton = document.getElementById("currentLocaltion");
@@ -58,6 +60,41 @@
     //点击事件获取经纬度
     map.addEventListener("dblclick",function(e){
         prompt("鼠标单击地方的经纬度为：",e.point.lng + "," + e.point.lat);
+    });
+
+    //点击点赞功能
+    map.addEventListener("click",function (e) {
+        if(magicOpen){
+            var lng = e.point.lng;
+            var lat = e.point.lat;
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.status==200){
+                    if ( xmlhttp.readyState==4){
+                        map.clearOverlays();
+                        var resStr = xmlhttp.response;
+                        var res = JSON.parse(resStr);
+                        var regionList;
+                        if(res.code == 0){
+                            regionList = res.data;
+                        }
+                        drawRegion(map,regionList);
+                    }
+                }
+            }
+
+            xmlhttp.open("post","/user/markFavor?");
+            //如果是POST请求方式，设置请求首部信息
+            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            /*
+             * 4    浏览器向服务器发送请求
+             *     send()方法：
+             *         * 如果浏览器请求的类型为GET类型时，通过send()方法发送请求数据，服务器接收不到
+             *         * 如果浏览器请求的类型为POST类型时，通过send()方法发送请求数据，服务器可以接收
+             */
+
+            xmlhttp.send("latADlng="+lat+","+lng);
+        }
     });
 
     //查询方法
@@ -102,24 +139,30 @@
 
     var magicPosition = document.getElementById("magicLocation");
     magicPosition.onclick = function () {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.status==200){
-                if ( xmlhttp.readyState==4){
-                    map.clearOverlays();
-                    var resStr = xmlhttp.response;
-                    var res = JSON.parse(resStr);
-                    var regionList;
-                    if(res.code == 0){
-                        regionList = res.data;
+        magicOpen = !magicOpen;
+        if(magicOpen){
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.status==200){
+                    if ( xmlhttp.readyState==4){
+                        map.clearOverlays();
+                        var resStr = xmlhttp.response;
+                        var res = JSON.parse(resStr);
+                        var regionList;
+                        if(res.code == 0){
+                            regionList = res.data;
+                        }
+                        drawRegion(map,regionList);
                     }
-                    drawRegion(map,regionList);
                 }
             }
+
+            xmlhttp.open("get","/user/showMagicPosition");
+            xmlhttp.send(null);
+        }else{
+            map.clearOverlays();
         }
 
-        xmlhttp.open("get","/user/showMagicPosition");
-        xmlhttp.send(null);
     }
 
 

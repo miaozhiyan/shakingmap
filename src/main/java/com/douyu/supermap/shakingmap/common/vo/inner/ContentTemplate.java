@@ -19,7 +19,7 @@ public class ContentTemplate {
 
     private String contentNote;
 
-    private Integer favoriteCount;
+    private Integer favoriteCount=0;
 
     private Integer status;
 
