@@ -2,19 +2,26 @@ package com.douyu.supermap.shakingmap.config.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class RedisManagerImp {
+public class RedisManagerImp implements RedisManager{
     @Autowired
     private RedisTemplate redisTemplate;
 
-    public void set(String key,String value){
+    @PostConstruct
+    public void init(){
+        redisTemplate.setValueSerializer( new StringRedisSerializer());
+    }
+
+    public void set(String key, String value){
         if (key==null){
             throw new RuntimeException();
         }
@@ -65,6 +72,10 @@ public class RedisManagerImp {
             throw new RuntimeException();
         }
         return (String)redisTemplate.opsForHash().get(redisKey,hashKey);
+    }
+
+    public void incre(String key){
+        redisTemplate.opsForValue().increment(key,1L);
     }
 
 }

@@ -4,6 +4,7 @@ import com.douyu.supermap.shakingmap.common.utils.FileUploadUtils;
 import com.douyu.supermap.shakingmap.common.vo.inner.ContentTemplate;
 import com.douyu.supermap.shakingmap.common.vo.req.AddNewContentReq;
 import com.douyu.supermap.shakingmap.common.vo.res.ResultVo;
+import com.douyu.supermap.shakingmap.config.redis.RedisManager;
 import com.douyu.supermap.shakingmap.service.interfaces.IUserService;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -32,6 +33,9 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private RedisManager redisManager;
 
     @PostMapping("/content/add")
     @ResponseBody
@@ -76,28 +80,38 @@ public class UserController {
     @GetMapping("/showMagicPosition")
     @ResponseBody
     public ResultVo showMagicPosition(){
-        if (templates.isEmpty()){
-            ContentTemplate template = new ContentTemplate();
-            template.setLocationRegion("西陵区");
-            template.setLocationCity("宜昌");
-            template.setLocationCountry("中国");
-            template.setNickname("测试的昵称");
-            template.setContentNote("测试的地点");
-            template.setBaiduMapLongtitue(111.31018);
-            template.setBaiduMapLatitude(30.73268);
-            templates.add(template);
+        templates.clear();
 
-
-            ContentTemplate template2 = new ContentTemplate();
-            template2.setLocationRegion("江夏区");
-            template2.setLocationCity("武汉");
-            template2.setLocationCountry("中国");
-            template2.setNickname("缪添加");
-            template2.setContentNote("华夏学院上面");
-            template2.setBaiduMapLongtitue(114.418145);
-            template2.setBaiduMapLatitude(30.475546);
-            templates.add(template2);
+        ContentTemplate template = new ContentTemplate();
+        template.setId(1L);
+        template.setLocationRegion("西陵区");
+        template.setLocationCity("宜昌");
+        template.setLocationCountry("中国");
+        template.setNickname("测试的昵称");
+        template.setContentNote("测试的地点");
+        template.setBaiduMapLongtitue(111.31018);
+        template.setBaiduMapLatitude(30.73268);
+        String favorCount = redisManager.get("contentFavorCount:"+template.getId());
+        if (favorCount != null){
+            template.setFavoriteCount(Integer.parseInt(favorCount));
         }
+        templates.add(template);
+
+
+        ContentTemplate template2 = new ContentTemplate();
+        template2.setId(2L);
+        template2.setLocationRegion("江夏区");
+        template2.setLocationCity("武汉");
+        template2.setLocationCountry("中国");
+        template2.setNickname("缪添加");
+        template2.setContentNote("华夏学院上面");
+        template2.setBaiduMapLongtitue(114.418145);
+        template2.setBaiduMapLatitude(30.475546);
+        String favorCount2 = redisManager.get("contentFavorCount:"+template2.getId());
+        if (favorCount2 != null){
+            template2.setFavoriteCount(Integer.parseInt(favorCount2));
+        }
+        templates.add(template2);
 
         return ResultVo.asSuccess(templates);
     }
@@ -119,12 +133,12 @@ public class UserController {
                     );
 
                     if (cor){
-                        contentTemplate.setFavoriteCount(contentTemplate.getFavoriteCount()+1);
+                        redisManager.incre("contentFavorCount:"+contentTemplate.getId());
                     }
                 }
         );
 
-        return ResultVo.asSuccess(templates);
+        return showMagicPosition();
     }
 
 
