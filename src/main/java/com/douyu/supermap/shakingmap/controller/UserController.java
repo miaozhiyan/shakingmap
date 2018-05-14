@@ -72,6 +72,14 @@ public class UserController {
     public String loginPage(){
         return "user/login";
     }
+
+    @RequestMapping("/register")
+    @ResponseBody
+    public ResultVo registerUser(String username,String pwd){
+        ResultVo resultVo = userService.addUser(username,pwd);
+        return resultVo;
+    }
+
     @GetMapping("/center")
     public String centerPage(){
         return "user/center";

@@ -32,9 +32,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/visitor/**").permitAll() //游客
                 .antMatchers("/static/**").permitAll()  //静态资源
                 .antMatchers("/user/login").permitAll() //用户登录
+                .antMatchers("/user/register").permitAll() //用户注册
                 .antMatchers("/admin/login").permitAll() //管理员登陆
 //                .antMatchers("/admin/**").hasRole("ADMIN") //管理员
-//                .antMatchers("/user/**").hasAnyRole("ADMIN","USER") //用户
+                .antMatchers("/user/**").hasAnyRole("ADMIN","USER") //用户
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login")

@@ -27,4 +27,6 @@ public interface IUserService {
      * @return
      */
     User addUserByTel(String tel);
+
+    ResultVo addUser(String username, String pwd);
 }

@@ -31,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -106,6 +107,30 @@ public class UserServiceImp implements IUserService{
             FileUtils.forceDelete(temp);
         }
         return ResultVo.asSuccess();
+    }
+
+    @Transactional
+    @Override
+    public ResultVo addUser(String username, String pwd) {
+        if(StringUtils.isBlank(username)&&StringUtils.isBlank(pwd)){
+            return ResultVo.asError("用户名或密码不能为空");
+        }
+        User newUser = new User();
+        newUser.setAccount(username);
+        newUser.setPwd("");
+        newUser.setCreateTime(System.currentTimeMillis()/1000);
+        userRepository.save(newUser);
+        String encodePwd = new Md5PasswordEncoder().encodePassword(pwd,newUser.getId());
+        newUser.setPwd(encodePwd);
+        userRepository.save(newUser);
+
+        Role newRole = new Role();
+        newRole.setCreateTime(System.currentTimeMillis()/1000);
+        newRole.setUserId(newUser.getId());
+        newRole.setRoleName("USER");
+        roleRepository.save(newRole);
+
+        return ResultVo.asSuccess(newUser.getPassword());
     }
 
     @Override
