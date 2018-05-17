@@ -47,7 +47,7 @@ public class UserController {
         if (file==null||file.getSize() == 0L || file.getSize()>MAX_CONTENT_FILE_SIZE){
             return ResultVo.asError("文件大小不能超过"+ FileUploadUtils.transformLongToFileSize(MAX_CONTENT_FILE_SIZE));
         }
-        if (FileUploadUtils.isLegalFmt(file.getOriginalFilename(),new String[]{"mp4","avi"})){
+        if (!FileUploadUtils.isLegalFmt(file.getOriginalFilename(),new String[]{"mp4","avi","jpg","jpeg","bmp","png"})){
             return ResultVo.asError("上传文件类型不匹配");
         }
 
@@ -114,6 +114,7 @@ public class UserController {
         template2.setContentNote("华夏学院上面");
         template2.setBaiduMapLongtitue(114.418145);
         template2.setBaiduMapLatitude(30.475546);
+        template2.setContentUrl("p6a8636wy.bkt.clouddn.com/Fk3xbwqXpsZ1-h3uucTus-VJjyuo");
         String favorCount2 = redisManager.get("contentFavorCount:"+template2.getId());
         if (favorCount2 != null){
             template2.setFavoriteCount(Integer.parseInt(favorCount2));
