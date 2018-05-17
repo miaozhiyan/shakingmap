@@ -1,0 +1,90 @@
+<html>
+<head>
+    <title>注册页面</title>
+</head>
+<body>
+<!--表单-->
+<form class="form-horizontal" action="/user/register" onsubmit="return check()" method="post">
+    <div class="form-group">
+        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+        <label for="inputAccount" class="col-sm-2 control-label">用户名</label>
+        <div class="col-sm-3">
+            <input name="account" type="text" class="form-control" id="inputAccount" placeholder="用户名不超过15位"/><span id="accSpan"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+        <label for="inputPassword" class="col-sm-2 control-label">密码</label>
+        <div class="col-sm-3">
+            <input name="pwd" type="password" class="form-control" id="inputPassword" placeholder="请输入密码,至少6位"/><span id="pwdSpan"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-3">
+            <button type="submit" class="btn btn-default" id ="submitButton">注册</button>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>
+
+<script type="text/javascript">
+    var spanacc = document.getElementById("accSpan");
+
+    var accountIn = document.getElementById("inputAccount");
+    var hasAccount = false;
+    accountIn.onblur = function () {
+        if(accountIn.value.length==0){
+            spanacc.innerHTML="";
+            spanacc.className="";
+            hasAccount = false;
+        }else if (accountIn.value.length>25){
+            spanacc.innerHTML="输入有误，用户名不超过25位";
+            spanacc.className="text-danger";
+            hasAccount = false;
+        }else{
+            spanacc.innerHTML="该用户名可以使用!";
+            spanacc.className="text-success";
+            hasAccount = true;
+        }
+    }
+
+
+    function check(){
+        if(hasAccount)
+            return true;
+        else{
+            alert("emmm~ 个人信息不符合规范不能注册!");
+            return false;
+        }
+    }
+
+
+
+    var submit = document.getElementById("submitButton");
+    submit.onmousemove = function () {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if(xmlhttp.readyState==4){
+                if(xmlhttp.status==200){
+                    var resStr = xmlhttp.response;
+                    var res = JSON.parse(resStr);
+                    if(res.code == 0){
+                        spanacc.innerHTML="该用户名可以注册";
+                        hasAccount=true;
+                    }else{
+                        hasAccount=false;
+                        spanacc.innerHTML=res.msg;
+                    }
+                }
+            }
+        }
+        <!--建立连接-->
+        xmlhttp.open("get","/visitor/signInCheckAcc?account="+accountIn.value);
+        <!--发送请求-->
+        xmlhttp.send(null);
+    }
+
+
+</script>

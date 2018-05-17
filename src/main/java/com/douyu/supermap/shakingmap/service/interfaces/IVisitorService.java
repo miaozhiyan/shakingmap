@@ -6,4 +6,6 @@ import java.io.IOException;
 
 public interface IVisitorService {
     ResultVo locationInfo(String address, String city) throws IOException;
+
+    ResultVo signInCheckAcc(String account);
 }

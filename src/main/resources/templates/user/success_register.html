@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>成功注册</title>
+</head>
+<body>
+    <div class="center-block">
+        注册成功，<span id="second">3</span>秒后跳转到首页!
+        若为跳转，请点击<a href="../visitor/mainMap">这里</a>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    var second = document.getElementById("second");
+    var sec=3;
+    setInterval(
+        function () {
+            if(sec >0){
+                sec = sec-1;
+                second.innerHTML=sec;
+            }else{
+                location.href="../visitor/mainMap";
+            }
+        }
+        ,1000
+    )
+</script>

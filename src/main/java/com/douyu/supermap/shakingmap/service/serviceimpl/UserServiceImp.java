@@ -112,7 +112,7 @@ public class UserServiceImp implements IUserService{
     @Transactional
     @Override
     public ResultVo addUser(String username, String pwd) {
-        if(StringUtils.isBlank(username)&&StringUtils.isBlank(pwd)){
+        if(StringUtils.isBlank(username)||StringUtils.isBlank(pwd)){
             return ResultVo.asError("用户名或密码不能为空");
         }
         User newUser = new User();

@@ -1,6 +1,8 @@
 package com.douyu.supermap.shakingmap.service.serviceimpl;
 
+import com.douyu.supermap.shakingmap.common.entity.User;
 import com.douyu.supermap.shakingmap.common.vo.res.ResultVo;
+import com.douyu.supermap.shakingmap.dao.UserRepository;
 import com.douyu.supermap.shakingmap.service.interfaces.IVisitorService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +12,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,9 @@ public class VisitorService implements IVisitorService{
 
     @Value("${baidu.serverKey}")
     private String baiduServerKey;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     @Override
@@ -54,5 +60,11 @@ public class VisitorService implements IVisitorService{
         Double lat = jsonLocation.get("lat").asDouble();
 
         return ResultVo.asSuccess("lng="+lng+";lat="+lat);
+    }
+
+    @Override
+    public ResultVo signInCheckAcc(String account){
+        User user = userRepository.findByAccount(account);
+        return user==null?ResultVo.asSuccess():ResultVo.asError("该帐号已经注册了");
     }
 }

@@ -74,10 +74,9 @@ public class UserController {
     }
 
     @RequestMapping("/register")
-    @ResponseBody
-    public ResultVo registerUser(String username,String pwd){
-        ResultVo resultVo = userService.addUser(username,pwd);
-        return resultVo;
+    public String registerUser(String account,String pwd){
+        ResultVo resultVo = userService.addUser(account,pwd);
+        return "user/success_register";
     }
 
     @GetMapping("/center")
