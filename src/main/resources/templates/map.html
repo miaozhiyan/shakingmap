@@ -1,36 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <script src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
+
     <title>Hello, World</title>
     <style type="text/css">
-        html{height:100%}
-        body{height:100%;margin:0px;padding:0px}
-        #container{height:100%}
+        html {
+            height: 100%
+        }
+
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+
+        #container {
+            height: 100%
+        }
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&amp;ak=8Lrjtbq9AVIkXQGyI495DhPV1TfuKNtY">
     </script>
 </head>
 
 <body>
+<div id="Layer1" style="z-index:9999;position:absolute;display:none;width:150px;height:180px;"/>
 <input id="searchText" type="text" name="searchText"></input>
-<input type="button" id = "searchButton" name="searchButton" value="查询"/>
-<input type="button" id = "currentLocaltion" name="currentLocaltionButton" value="当前位置"/>
-<input type="button" id = "interestingSearch" name="interestingSearchButton" value="某个城市特定类型的地点"/>
+<input type="button" id="searchButton" name="searchButton" value="查询"/>
+<input type="button" id="currentLocaltion" name="currentLocaltionButton" value="当前位置"/>
+<input type="button" id="interestingSearch" name="interestingSearchButton" value="某个城市特定类型的地点"/>
 <input id="cityText" type="text" name="cityText"></input>
 <span> ———</span>
-<input type="button" id = "magicLocation" name="magicLocation" value="显示上传的地点"/>
+<input type="button" id="magicLocation" name="magicLocation" value="显示上传的地点"/>
 <div id="container"></div>
 <script type="text/javascript">
     var map = new BMap.Map("container");
     // 创建地图实例
-    var point = new BMap.Point(111.2888001000,30.7081000101);
+    var point = new BMap.Point(114.418037,30.474292);
     // 创建点坐标
     map.centerAndZoom(point, 18);
     // 初始化地图，设置中心点坐标和地图级别
     map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
-    map.addControl(new BMap.NavigationControl({enableGeolocation:false})); //比例尺控件
+    map.addControl(new BMap.NavigationControl({enableGeolocation: false})); //比例尺控件
     map.addControl(new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT})); //左下角
     map.addControl(new BMap.OverviewMapControl());
     //map.addControl(new BMap.MapTypeControl());
@@ -41,51 +55,63 @@
 
     //获得当前位置方法
     var currentLocaltionButton = document.getElementById("currentLocaltion");
-    currentLocaltionButton.onclick = function(){
+    currentLocaltionButton.onclick = function () {
         map.clearOverlays();
         var geolocation = new BMap.Geolocation();
-        geolocation.getCurrentPosition(function(r){
-            if(this.getStatus() == 0){
+        geolocation.getCurrentPosition(function (r) {
+            if (this.getStatus() == 0) {
                 var mk = new BMap.Marker(r.point);
                 map.addOverlay(mk);
                 map.panTo(r.point);
                 //alert('您的位置：'+r.point.lng+','+r.point.lat);
             }
             else {
-                alert('failed'+this.getStatus());
+                alert('failed' + this.getStatus());
             }
-        },{enableHighAccuracy: true})
+        }, {enableHighAccuracy: true})
     }
 
     //点击事件获取经纬度
-    map.addEventListener("dblclick",function(e){
-        prompt("鼠标单击地方的经纬度为：",e.point.lng + "," + e.point.lat);
+    map.addEventListener("dblclick", function (e) {
+        prompt("鼠标单击地方的经纬度为：", e.point.lng + "," + e.point.lat);
     });
 
-    //点击点赞功能
-    map.addEventListener("click",function (e) {
-        if(magicOpen){
+    //查看图片功能
+    var hasshow = false;
+    map.addEventListener("mousemove", function (e) {
+        if (magicOpen) {
             var lng = e.point.lng;
             var lat = e.point.lat;
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.status==200){
-                    if ( xmlhttp.readyState==4){
-                        map.clearOverlays();
+                if (xmlhttp.status == 200) {
+                    if (xmlhttp.readyState == 4) {
                         var resStr = xmlhttp.response;
                         var res = JSON.parse(resStr);
-                        var regionList;
-                        if(res.code == 0){
-                            regionList = res.data;
+                        console.log("---code:"+res.code);
+                        if (res.code == 0 ) {
+                            if(!hasshow){
+                                hasshow = true;
+                                console.log("---1111-----:"+img);
+                                var contentUrl = 'http://'+res.data.contentUrl;
+                                var img = $("<img src="+contentUrl+"/>");
+                                img.offset({"left": window.event.pageX + 5, "top": window.event.pageY - 10, "height": "20px", "width": "20px"});
+                                img.appendTo($("#Layer1")).show();
+                                document.getElementById("Layer1").style.display="block";
+                            }
+                        } else {
+                            hasshow=false;
+                            console.log("-----qu2---");
+                            document.getElementById("Layer1").style.display="none";
+                            $("#Layer1").empty();
                         }
-                        drawRegion(map,regionList);
                     }
                 }
             }
 
-            xmlhttp.open("post","/user/markFavor?");
+            xmlhttp.open("post", "/user/contentInfo");
             //如果是POST请求方式，设置请求首部信息
-            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             /*
              * 4    浏览器向服务器发送请求
              *     send()方法：
@@ -93,18 +119,54 @@
              *         * 如果浏览器请求的类型为POST类型时，通过send()方法发送请求数据，服务器可以接收
              */
 
-            xmlhttp.send("latADlng="+lat+","+lng);
+            xmlhttp.send("latADlng=" + lat + "," + lng);
+        }
+    });
+
+
+    //点击点赞功能
+    map.addEventListener("click", function (e) {
+        if (magicOpen) {
+            var lng = e.point.lng;
+            var lat = e.point.lat;
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.status == 200) {
+                    if (xmlhttp.readyState == 4) {
+                        map.clearOverlays();
+                        var resStr = xmlhttp.response;
+                        var res = JSON.parse(resStr);
+                        var regionList;
+                        if (res.code == 0) {
+                            regionList = res.data;
+                        }
+                        drawRegion(map, regionList);
+                    }
+                }
+            }
+
+            xmlhttp.open("post", "/user/markFavor?");
+            //如果是POST请求方式，设置请求首部信息
+            xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            /*
+             * 4    浏览器向服务器发送请求
+             *     send()方法：
+             *         * 如果浏览器请求的类型为GET类型时，通过send()方法发送请求数据，服务器接收不到
+             *         * 如果浏览器请求的类型为POST类型时，通过send()方法发送请求数据，服务器可以接收
+             */
+
+            xmlhttp.send("latADlng=" + lat + "," + lng);
         }
     });
 
     //查询方法
     var searchElement = document.getElementById("searchButton");
-    searchElement.onclick = function(){
+    searchElement.onclick = function () {
         map.clearOverlays();
 
         var searchText = document.getElementById("searchText");
 
-        var local = new BMap.LocalSearch(map,{
+        var local = new BMap.LocalSearch(map, {
             renderOptions: {
                 map: map,
                 autoViewport: true,
@@ -119,13 +181,13 @@
 
     //兴趣点查找
     var interestSearchElement = document.getElementById("interestingSearch");
-    interestSearchElement.onclick = function(){
+    interestSearchElement.onclick = function () {
         map.clearOverlays();
 
         var searchText = document.getElementById("searchText");
         var searchCity = document.getElementById("cityText");
-        var local = new BMap.LocalSearch(searchCity.value,{
-            renderOptions:{
+        var local = new BMap.LocalSearch(searchCity.value, {
+            renderOptions: {
                 map: map,
                 autoViewport: true,
                 selectFirstResult: false,
@@ -140,26 +202,26 @@
     var magicPosition = document.getElementById("magicLocation");
     magicPosition.onclick = function () {
         magicOpen = !magicOpen;
-        if(magicOpen){
+        if (magicOpen) {
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.status==200){
-                    if ( xmlhttp.readyState==4){
+                if (xmlhttp.status == 200) {
+                    if (xmlhttp.readyState == 4) {
                         map.clearOverlays();
                         var resStr = xmlhttp.response;
                         var res = JSON.parse(resStr);
                         var regionList;
-                        if(res.code == 0){
+                        if (res.code == 0) {
                             regionList = res.data;
                         }
-                        drawRegion(map,regionList);
+                        drawRegion(map, regionList);
                     }
                 }
             }
 
-            xmlhttp.open("get","/user/showMagicPosition");
+            xmlhttp.open("get", "/user/showMagicPosition");
             xmlhttp.send(null);
-        }else{
+        } else {
             map.clearOverlays();
         }
 
@@ -167,7 +229,7 @@
 
 
 </script>
-<script  type='text/javascript' src="/static/drawRegion.js"></script>
+<script type='text/javascript' src="/static/drawRegion.js"></script>
 </body>
 </html>
 

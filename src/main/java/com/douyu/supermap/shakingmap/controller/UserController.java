@@ -7,6 +7,7 @@ import com.douyu.supermap.shakingmap.common.vo.res.ResultVo;
 import com.douyu.supermap.shakingmap.config.redis.RedisManager;
 import com.douyu.supermap.shakingmap.service.interfaces.IUserService;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,6 +126,41 @@ public class UserController {
     }
 
 
+    @RequestMapping("/contentInfo")
+    @ResponseBody
+    public ResultVo contentInfo(String latADlng){
+        String [] data = latADlng.split(",");
+        String lat = data[0];
+        String lng = data[1];
+//        MutableBoolean flag = new MutableBoolean(false);
+//        templates.forEach(
+//                contentTemplate->{
+//                    boolean cor =
+//                            (
+//                                    Math.abs(contentTemplate.getBaiduMapLatitude() - Double.parseDouble(lat))<0.001 &&
+//                                            Math.abs(contentTemplate.getBaiduMapLongtitue() - Double.parseDouble(lng))<0.001
+//                            );
+//
+//                    if (cor){
+//                        flag.setValue(true);
+//                    }
+//                }
+//        );
+
+        List<ContentTemplate> res = new ArrayList<>();
+        for(ContentTemplate contentTemplate : templates){
+            if( Math.abs(contentTemplate.getBaiduMapLatitude() - Double.parseDouble(lat))<0.0005 &&
+                    Math.abs(contentTemplate.getBaiduMapLongtitue() - Double.parseDouble(lng))<0.0005){
+                res.add(contentTemplate);
+            }
+        }
+
+        if (res.isEmpty()){
+            return ResultVo.asError("没有对应的内容");
+        }
+        return ResultVo.asSuccess(res.get(0));
+    }
+
     @PostMapping("/markFavor")
     @ResponseBody
     public ResultVo markFavor(String latADlng){
@@ -136,8 +172,8 @@ public class UserController {
                 contentTemplate->{
                     boolean cor =
                     (
-                            Math.abs(contentTemplate.getBaiduMapLatitude() - Double.parseDouble(lat))<0.001 &&
-                            Math.abs(contentTemplate.getBaiduMapLongtitue() - Double.parseDouble(lng))<0.001
+                            Math.abs(contentTemplate.getBaiduMapLatitude() - Double.parseDouble(lat))<0.0005 &&
+                            Math.abs(contentTemplate.getBaiduMapLongtitue() - Double.parseDouble(lng))<0.0005
                     );
 
                     if (cor){

@@ -28,7 +28,7 @@ CREATE TABLE `content` (
   `create_time` bigint(13) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `uid` bigint(13) NOT NULL DEFAULT '0' COMMENT '关联的用户id',
   `content_url` varchar(255) NOT NULL DEFAULT '' COMMENT '内容的url',
-  `content_note` varchar(32) NOT NULL DEFAULT '' COMMENT '内容的描述',
+  `content_note` varchar(50) NOT NULL DEFAULT '' COMMENT '内容的描述',
   `favorite_count` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '获赞次数',
   `status` int(4) NOT NULL DEFAULT '0' COMMENT '内容状态  -1:删除 0:正常 1:推荐',
   `location` varchar(80) NOT NULL DEFAULT '' COMMENT '地理位置',
