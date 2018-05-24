@@ -64,9 +64,8 @@ public class UserController {
 
 
     @RequestMapping("/hello")
-    @ResponseBody
     public String hello(){
-        return "user/hello";
+        return "redirect:/visitor/mainMap";
     }
 
     @GetMapping("/login")
@@ -111,8 +110,8 @@ public class UserController {
         template2.setLocationRegion("江夏区");
         template2.setLocationCity("武汉");
         template2.setLocationCountry("中国");
-        template2.setNickname("缪添加");
-        template2.setContentNote("华夏学院上面");
+        template2.setNickname("综合楼");
+        template2.setContentNote("大楼很漂亮");
         template2.setBaiduMapLongtitue(114.418145);
         template2.setBaiduMapLatitude(30.475546);
         template2.setContentUrl("p6a8636wy.bkt.clouddn.com/Fk3xbwqXpsZ1-h3uucTus-VJjyuo");
